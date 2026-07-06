@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <title>Admin · المبيعات الفورية</title>
+    <link rel="icon" type="image/png" href="Asset 5.png">
+    
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    
+    <style>
+        /* ===== نفس الـ Styles السابق ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --expo-orange: #FF6B1A;
+            --expo-orange-dark: #E85A0C;
+            --expo-black: #0F0F10;
+            --expo-white: #FFFFFF;
+            --expo-gray: #71717A;
+            --expo-gray-light: #E8E0D6;
+            --radius: 16px;
+            --radius-sm: 10px;
+            --shadow: 0 8px 30px rgba(0,0,0,0.15);
+            --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+        body { font-family: 'Cairo', sans-serif; background: #f5f0ea; color: var(--expo-black); min-height: 100vh; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        /* ===== LOGIN ===== */
+        .login-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a1c 0%, #0f0f10 100%);
+            padding: 20px;
+        }
+        .login-box {
+            background: var(--expo-white);
+            padding: 40px;
+            border-radius: var(--radius);
+            max-width: 400px;
+            width: 100%;
+            border: 2px solid var(--expo-orange);
+            text-align: center;
+        }
+        .login-box .logo h1 { font-size: 1.8rem; font-weight: 900; color: var(--expo-black); }
+        .login-box .logo h1 span { color: var(--expo-orange); }
+        .login-box .logo p { color: var(--expo-gray); font-size: 0.9rem; }
+        .login-box .form-group { margin-bottom: 16px; text-align: right; }
+        .login-box .form-group label { display: block; font-weight: 700; font-size: 0.9rem; margin-bottom: 6px; }
+        .login-box .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--expo-gray-light);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-family: 'Cairo', sans-serif;
+            background: #faf6f0;
+        }
+        .login-box .form-control:focus { outline: none; border-color: var(--expo-orange); box-shadow: 0 0 0 4px rgba(255,107,26,0.12); }
+        .login-box .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-weight: 800;
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, var(--expo-orange), var(--expo-orange-dark));
+            color: var(--expo-white);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .login-box .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,107,26,0.3); }
+        .login-box .error-msg { background: #fee2e2; color: #dc2626; padding: 10px; border-radius: var(--radius-sm); margin-top: 12px; display: none; }
+        .login-box .error-msg.show { display: block; }
+        /* ===== DASHBOARD ===== */
+        .dashboard { display: none; }
+        .dash-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--expo-gray-light);
+        }
+        .dash-header .title h1 { font-size: 1.4rem; font-weight: 900; color: var(--expo-black); }
+        .dash-header .title h1 span { color: var(--expo-orange); }
+        .dash-header .title p { color: var(--expo-gray); font-size: 0.8rem; }
+        .btn-logout {
+            padding: 8px 20px;
+            border: 2px solid var(--expo-gray-light);
+            border-radius: var(--radius-sm);
+            background: transparent;
+            font-size: 0.9rem;
+            font-weight: 700;
+            font-family: 'Cairo', sans-serif;
+            cursor: pointer;
+            transition: var(--transition);
+            color: var(--expo-gray);
+        }
+        .btn-logout:hover { border-color: #dc2626; color: #dc2626; }
+        .current-total {
+            background: var(--expo-white);
+            padding: 24px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            text-align: center;
+            margin-bottom: 24px;
+            border-right: 4px solid var(--expo-orange);
+        }
+        .current-total .number {
+            font-size: 4rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--expo-orange), #CDA434);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .current-total .label { font-size: 0.9rem; color: var(--expo-gray); }
+        .quick-add {
+            background: var(--expo-white);
+            padding: 24px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+            text-align: center;
+        }
+        .quick-add .btn-big {
+            width: 100%;
+            padding: 30px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 3rem;
+            font-weight: 900;
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, var(--expo-orange), var(--expo-orange-dark));
+            color: var(--expo-white);
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 8px 25px rgba(255,107,26,0.3);
+        }
+        .quick-add .btn-big:hover { transform: scale(1.02); box-shadow: 0 12px 40px rgba(255,107,26,0.4); }
+        .quick-add .btn-big:active { transform: scale(0.98); }
+        .project-select {
+            background: var(--expo-white);
+            padding: 24px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+        .project-select label { display: block; font-weight: 700; font-size: 0.95rem; margin-bottom: 8px; color: var(--expo-black); }
+        .project-select select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid var(--expo-gray-light);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-family: 'Cairo', sans-serif;
+            background: #faf6f0;
+            margin-bottom: 12px;
+        }
+        .project-select select:focus { outline: none; border-color: var(--expo-orange); }
+        .project-select .btn-sell {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 1.1rem;
+            font-weight: 800;
+            font-family: 'Cairo', sans-serif;
+            background: var(--expo-orange);
+            color: var(--expo-white);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .project-select .btn-sell:hover { background: var(--expo-orange-dark); transform: translateY(-2px); }
+        .manual-override {
+            background: var(--expo-white);
+            padding: 24px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+        .manual-override label { display: block; font-weight: 700; font-size: 0.95rem; margin-bottom: 8px; color: var(--expo-black); }
+        .manual-override .input-row { display: flex; gap: 12px; }
+        .manual-override input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 2px solid var(--expo-gray-light);
+            border-radius: var(--radius-sm);
+            font-size: 1rem;
+            font-family: 'Cairo', sans-serif;
+            background: #faf6f0;
+        }
+        .manual-override input:focus { outline: none; border-color: var(--expo-orange); }
+        .manual-override .btn-set {
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            font-weight: 700;
+            font-family: 'Cairo', sans-serif;
+            background: var(--expo-black);
+            color: var(--expo-white);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .manual-override .btn-set:hover { background: #2a2a2a; }
+        .reset-section { text-align: center; }
+        .reset-section .btn-reset {
+            padding: 12px 32px;
+            border: 2px solid #dc2626;
+            border-radius: var(--radius-sm);
+            background: transparent;
+            color: #dc2626;
+            font-size: 0.95rem;
+            font-weight: 700;
+            font-family: 'Cairo', sans-serif;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .reset-section .btn-reset:hover { background: #dc2626; color: var(--expo-white); }
+        .toast {
+            position: fixed;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--expo-black);
+            color: var(--expo-white);
+            padding: 12px 24px;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 0.95rem;
+            z-index: 9999;
+            display: none;
+            animation: slideDown 0.4s ease;
+            font-family: 'Cairo', sans-serif;
+            max-width: 90%;
+        }
+        .toast.success { border-right: 4px solid #22c55e; }
+        .toast.error { border-right: 4px solid #dc2626; }
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+        @media (max-width: 480px) {
+            .current-total .number { font-size: 3rem; }
+            .quick-add .btn-big { font-size: 2.5rem; padding: 20px; }
+            .manual-override .input-row { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== TOAST ===== -->
+    <div class="toast" id="toast"></div>
+
+    <!-- ===== LOGIN SCREEN ===== -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-box">
+            <div class="logo">
+                <h1>PHARAOHS <span>SALES</span></h1>
+                <p>لوحة تحكم المبيعات الفورية</p>
+            </div>
+            <div class="form-group">
+                <label for="adminEmail">البريد الإلكتروني</label>
+                <input type="email" id="adminEmail" class="form-control" placeholder="admin@company.com" />
+            </div>
+            <div class="form-group">
+                <label for="adminPassword">كلمة المرور</label>
+                <input type="password" id="adminPassword" class="form-control" placeholder="••••••••" />
+            </div>
+            <button class="btn" id="loginBtn"><i class="fas fa-lock"></i> دخول</button>
+            <div class="error-msg" id="loginError">البريد الإلكتروني أو كلمة المرور غير صحيحة.</div>
+        </div>
+    </div>
+
+    <!-- ===== DASHBOARD ===== -->
+    <div class="dashboard" id="dashboard">
+        <div class="container">
+
+            <!-- HEADER -->
+            <div class="dash-header">
+                <div class="title">
+                    <h1>📊 <span>المبيعات</span> الفورية</h1>
+                    <p>تحكم في عداد المبيعات</p>
+                </div>
+                <button class="btn-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> خروج</button>
+            </div>
+
+            <!-- CURRENT TOTAL -->
+            <div class="current-total">
+                <div class="number" id="currentTotalDisplay">0</div>
+                <div class="label">إجمالي الوحدات المباعة</div>
+            </div>
+
+            <!-- QUICK ADD -->
+            <div class="quick-add">
+                <button class="btn-big" id="quickAddBtn">
+                    <i class="fas fa-plus-circle"></i> +1
+                </button>
+            </div>
+
+            <!-- PROJECT SELECT -->
+            <div class="project-select">
+                <label for="projectSelect">اختر المشروع</label>
+                <select id="projectSelect">
+                    <option value="grand-plaza">فندق جراند بلازا</option>
+                    <option value="hekaya">كومباوند حكاية</option>
+                    <option value="celya">كومباوند سيليا</option>
+                    <option value="kyan">مشروع كيان</option>
+                    <option value="taj">مشروع تاج</option>
+                    <option value="mazar-mall">مول مزار</option>
+                    <option value="makkah-mall">مول مكه</option>
+                </select>
+                <button class="btn-sell" id="sellProjectBtn">
+                    <i class="fas fa-tag"></i> بيع وحدة من هذا المشروع
+                </button>
+            </div>
+
+            <!-- MANUAL OVERRIDE -->
+            <div class="manual-override">
+                <label for="manualValue">تحديد العدد يدوياً</label>
+                <div class="input-row">
+                    <input type="number" id="manualValue" placeholder="أدخل الرقم..." min="0" />
+                    <button class="btn-set" id="setManualBtn">تحديث</button>
+                </div>
+            </div>
+
+            <!-- RESET -->
+            <div class="reset-section">
+                <button class="btn-reset" id="resetBtn">
+                    <i class="fas fa-undo"></i> تصفير العداد
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // ============================================================
+        // 0. FIREBASE CONFIG
+        // ============================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyD3F5eRgetzkp8rzsFrwyDZZJsNuxQxqeE",
+            authDomain: "pharaohs-expo-registration.firebaseapp.com",
+            projectId: "pharaohs-expo-registration",
+            storageBucket: "pharaohs-expo-registration.firebasestorage.app",
+            messagingSenderId: "821875473528",
+            appId: "1:821875473528:web:1a065f810386f6448ac18d"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const auth = firebase.auth();
+
+        // ============================================================
+        // 1. DOM REFS
+        // ============================================================
+        const loginScreen = document.getElementById('loginScreen');
+        const dashboard = document.getElementById('dashboard');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const adminEmail = document.getElementById('adminEmail');
+        const adminPassword = document.getElementById('adminPassword');
+        const loginError = document.getElementById('loginError');
+        const toast = document.getElementById('toast');
+
+        const currentTotalDisplay = document.getElementById('currentTotalDisplay');
+        const quickAddBtn = document.getElementById('quickAddBtn');
+        const projectSelect = document.getElementById('projectSelect');
+        const sellProjectBtn = document.getElementById('sellProjectBtn');
+        const manualValue = document.getElementById('manualValue');
+        const setManualBtn = document.getElementById('setManualBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        let currentTotal = 0;
+        let unsubscribe = null;
+
+        // ============================================================
+        // 2. TOAST
+        // ============================================================
+        function showToast(message, type = 'success') {
+            toast.textContent = message;
+            toast.className = `toast ${type}`;
+            toast.style.display = 'block';
+            clearTimeout(toast._hideTimer);
+            toast._hideTimer = setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // ============================================================
+        // 3. UPDATE TOTAL (باستخدام update بدلاً من set)
+        // ============================================================
+        async function updateTotal(newTotal, projectId = null) {
+            if (newTotal < 0) {
+                showToast('❌ الرقم لا يمكن أن يكون سالباً', 'error');
+                return false;
+            }
+
+            try {
+                const docRef = db.collection('salesDisplay').doc('salesDisplay');
+                // نتأكد أولاً أن المستند موجود
+                const doc = await docRef.get();
+                if (!doc.exists) {
+                    // إذا لم يكن موجوداً، ننشئه بقيمة 0
+                    await docRef.set({
+                        total: 0,
+                        lastProject: 'mazar-mall',
+                        lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+                // ثم نحدث القيمة
+                await docRef.update({
+                    total: newTotal,
+                    lastProject: projectId || 'mazar-mall',
+                    lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                showToast('✅ تم التحديث بنجاح!', 'success');
+                return true;
+            } catch (error) {
+                console.error('❌ خطأ في التحديث:', error);
+                showToast('❌ حدث خطأ أثناء التحديث: ' + error.message, 'error');
+                return false;
+            }
+        }
+
+        // ============================================================
+        // 4. INCREMENT TOTAL (باستخدام update مع increment)
+        // ============================================================
+        async function incrementTotal(projectId = null) {
+            try {
+                const docRef = db.collection('salesDisplay').doc('salesDisplay');
+                // نتأكد أولاً أن المستند موجود
+                const doc = await docRef.get();
+                if (!doc.exists) {
+                    // إذا لم يكن موجوداً، ننشئه بقيمة 0
+                    await docRef.set({
+                        total: 0,
+                        lastProject: 'mazar-mall',
+                        lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+                // نستخدم update مع increment (هذا يضمن إضافة 1 فقط وليس مضاعفة)
+                await docRef.update({
+                    total: firebase.firestore.FieldValue.increment(1),
+                    lastProject: projectId || 'mazar-mall',
+                    lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                showToast('✅ تم إضافة بيع جديد!', 'success');
+                return true;
+            } catch (error) {
+                console.error('❌ خطأ في الزيادة:', error);
+                showToast('❌ حدث خطأ أثناء إضافة البيع: ' + error.message, 'error');
+                return false;
+            }
+        }
+
+        // ============================================================
+        // 5. RESET TOTAL
+        // ============================================================
+        async function resetTotal() {
+            if (!confirm('⚠️ هل أنت متأكد من تصفير العداد؟ هذا الإجراء لا يمكن التراجع عنه!')) return;
+            try {
+                await updateTotal(0, 'mazar-mall');
+                showToast('✅ تم تصفير العداد بنجاح', 'success');
+            } catch (error) {
+                console.error('❌ خطأ في التصفير:', error);
+                showToast('❌ حدث خطأ أثناء التصفير', 'error');
+            }
+        }
+
+        // ============================================================
+        // 6. FIREBASE REALTIME LISTENER
+        // ============================================================
+        function startListening() {
+            if (unsubscribe) {
+                unsubscribe();
+            }
+
+            unsubscribe = db.collection('salesDisplay')
+                .doc('salesDisplay')
+                .onSnapshot((doc) => {
+                    if (doc.exists) {
+                        const data = doc.data();
+                        currentTotal = data.total || 0;
+                        currentTotalDisplay.textContent = currentTotal;
+                    } else {
+                        // إذا لم يكن المستند موجوداً، ننشئه بقيمة 0
+                        db.collection('salesDisplay').doc('salesDisplay').set({
+                            total: 0,
+                            lastProject: 'mazar-mall',
+                            lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
+                        });
+                    }
+                }, (error) => {
+                    console.error('❌ خطأ في الاستماع:', error);
+                });
+        }
+
+        // ============================================================
+        // 7. AUTHENTICATION
+        // ============================================================
+        function showDashboard() {
+            loginScreen.style.display = 'none';
+            dashboard.style.display = 'block';
+            startListening();
+            showToast('✅ مرحباً بك!', 'success');
+        }
+
+        function showLoginScreen() {
+            dashboard.style.display = 'none';
+            loginScreen.style.display = 'flex';
+            loginError.classList.remove('show');
+        }
+
+        loginBtn.addEventListener('click', async () => {
+            const email = adminEmail.value.trim();
+            const password = adminPassword.value.trim();
+
+            if (!email || !password) {
+                loginError.textContent = 'يرجى إدخال البريد الإلكتروني وكلمة المرور.';
+                loginError.classList.add('show');
+                return;
+            }
+
+            loginBtn.disabled = true;
+            loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الدخول...';
+            loginError.classList.remove('show');
+
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+            } catch (error) {
+                console.error('❌ خطأ في تسجيل الدخول:', error);
+                let msg = 'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
+                if (error.code === 'auth/user-not-found') msg = '⚠️ هذا البريد الإلكتروني غير مصرح به.';
+                if (error.code === 'auth/wrong-password') msg = 'كلمة المرور غير صحيحة.';
+                loginError.textContent = msg;
+                loginError.classList.add('show');
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<i class="fas fa-lock"></i> دخول';
+            }
+        });
+
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                showDashboard();
+                loginBtn.disabled = false;
+                loginBtn.innerHTML = '<i class="fas fa-lock"></i> دخول';
+            } else {
+                showLoginScreen();
+            }
+        });
+
+        logoutBtn.addEventListener('click', async () => {
+            try {
+                await auth.signOut();
+                if (unsubscribe) {
+                    unsubscribe();
+                    unsubscribe = null;
+                }
+                showToast('👋 تم تسجيل الخروج', 'success');
+            } catch (error) {
+                console.error('❌ خطأ في تسجيل الخروج:', error);
+                showToast('❌ حدث خطأ أثناء تسجيل الخروج', 'error');
+            }
+        });
+
+        // Enter key for login
+        adminPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') loginBtn.click(); });
+        adminEmail.addEventListener('keydown', (e) => { if (e.key === 'Enter') loginBtn.click(); });
+
+        // ============================================================
+        // 8. EVENT LISTENERS
+        // ============================================================
+
+        // Quick Add (+1)
+        quickAddBtn.addEventListener('click', () => {
+            const projectId = projectSelect.value;
+            incrementTotal(projectId);
+        });
+
+        // Sell from selected project
+        sellProjectBtn.addEventListener('click', () => {
+            const projectId = projectSelect.value;
+            incrementTotal(projectId);
+        });
+
+        // Manual override
+        setManualBtn.addEventListener('click', () => {
+            const value = parseInt(manualValue.value.trim());
+            if (isNaN(value) || value < 0) {
+                showToast('❌ يرجى إدخال رقم صحيح أكبر من أو يساوي 0', 'error');
+                return;
+            }
+            const projectId = projectSelect.value;
+            updateTotal(value, projectId);
+            manualValue.value = '';
+        });
+
+        // Reset
+        resetBtn.addEventListener('click', resetTotal);
+
+        // ============================================================
+        // 9. KEYBOARD SHORTCUTS
+        // ============================================================
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && document.activeElement === manualValue) {
+                setManualBtn.click();
+            }
+            if (e.key === ' ' && document.activeElement !== manualValue && document.activeElement !== adminPassword && document.activeElement !== adminEmail) {
+                e.preventDefault();
+                quickAddBtn.click();
+            }
+        });
+
+        console.log('✅ لوحة تحكم المبيعات جاهزة (باستخدام update)');
+    </script>
+</body>
+</html>
