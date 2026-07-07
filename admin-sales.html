@@ -392,6 +392,9 @@
                     <input type="number" id="manualValue" placeholder="أدخل الرقم..." min="0" />
                     <button class="btn-set" id="setManualBtn">تحديث</button>
                 </div>
+                <p style="font-size:0.7rem; color:var(--expo-gray); margin-top:8px;">
+                    <i class="fas fa-info-circle"></i> تحديد العدد يدوياً لا يرتبط بمشروع محدد (سيضيء جميع المشاريع)
+                </p>
             </div>
 
             <!-- ADD PROJECT -->
@@ -467,7 +470,7 @@
         let currentTotal = 0;
         let unsubscribe = null;
         let projects = [];
-        let isProcessing = false; // منع التحديثات المتكررة
+        let isProcessing = false;
 
         // ============================================================
         // 2. TOAST
@@ -542,7 +545,6 @@
                         lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 }
-                // استخدام increment(1) لضمان إضافة 1 فقط
                 await docRef.update({
                     total: firebase.firestore.FieldValue.increment(1),
                     lastProject: projectId || null,
@@ -550,7 +552,6 @@
                 });
                 showToast('✅ تم إضافة بيع جديد!', 'success');
                 
-                // تعطيل الأزرار مؤقتاً
                 quickAddBtn.disabled = true;
                 sellProjectBtn.disabled = true;
                 setTimeout(() => {
@@ -814,14 +815,15 @@
             incrementTotal(projectId);
         });
 
+        // ===== تحديد العدد يدوياً - دائماً بدون مشروع (null) =====
         setManualBtn.addEventListener('click', () => {
             const value = parseInt(manualValue.value.trim());
             if (isNaN(value) || value < 0) {
                 showToast('❌ يرجى إدخال رقم صحيح أكبر من أو يساوي 0', 'error');
                 return;
             }
-            const projectId = projectSelect.value || null;
-            updateTotal(value, projectId);
+            // لا نربط بأي مشروع محدد، نمرر null
+            updateTotal(value, null);
             manualValue.value = '';
         });
 
