@@ -9,9 +9,8 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
     
-    <!-- Odometer.js -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/themes/odometer-theme-default.min.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/odometer.js/0.4.8/odometer.min.js"></script>
+    <!-- CountUp.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/countup.js/2.8.0/countUp.min.js"></script>
     
     <!-- Canvas-confetti -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1"></script>
@@ -21,7 +20,7 @@
     <link rel="icon" type="image/png" href="Asset 5.png">
     
     <style>
-        /* ===== نفس الـ Styles السابق ===== */
+        /* ===== RESET & BASE ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --expo-orange: #FF6B1A;
@@ -35,167 +34,226 @@
         }
         html, body { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; }
         body { font-family: 'Cairo', sans-serif; background: var(--expo-black); color: var(--expo-white); overflow: hidden; }
+        
+        /* ===== BACKGROUND - أكثر إضاءة ===== */
         .bg-luxury {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 0;
-            background: radial-gradient(ellipse at 25% 30%, rgba(255,107,26,0.3) 0%, transparent 60%),
-                        radial-gradient(ellipse at 75% 70%, rgba(205,164,52,0.15) 0%, transparent 45%),
-                        radial-gradient(ellipse at 50% 50%, #0a0a0c 0%, #050303 100%);
+            background: 
+                radial-gradient(ellipse at 30% 40%, rgba(255, 107, 26, 0.6) 0%, rgba(205, 164, 52, 0.3) 30%, transparent 65%),
+                radial-gradient(ellipse at 70% 60%, rgba(255, 107, 26, 0.4) 0%, rgba(205, 164, 52, 0.2) 30%, transparent 55%),
+                radial-gradient(ellipse at 50% 50%, #2a150a 0%, #0f0805 100%);
             background-size: 100% 100%;
         }
+        
         .glow-orb {
-            position: fixed; width: 80vmin; height: 80vmin; border-radius: 50%;
-            background: radial-gradient(circle, rgba(255,107,26,0.15) 0%, rgba(255,107,26,0.05) 40%, transparent 70%);
+            position: fixed; width: 90vmin; height: 90vmin; border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 107, 26, 0.35) 0%, rgba(255, 107, 26, 0.12) 40%, transparent 70%);
             top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 0; pointer-events: none;
-            animation: orbPulse 12s ease-in-out infinite;
+            animation: orbPulse 15s ease-in-out infinite;
         }
         @keyframes orbPulse {
-            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
-            50% { transform: translate(-50%, -50%) scale(1.5); opacity: 1; }
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.9; }
+            50% { transform: translate(-50%, -50%) scale(1.6); opacity: 1; }
         }
+        
         .display-container {
             position: relative; z-index: 1; display: flex; flex-direction: column;
             justify-content: center; align-items: center; width: 100vw; height: 100vh;
             padding: 2vh 2vw; text-align: center; overflow: hidden;
         }
-        .header-logo { margin-bottom: 1vh; padding: 0 2vw; }
-        .header-logo img { height: 8vh; width: auto; max-height: 80px; filter: drop-shadow(0 0 5vh rgba(255,107,26,0.2)); transition: transform 0.3s ease; }
-        .header-logo:hover img { transform: scale(1.03); }
-        .expo-title {
-            font-size: clamp(0.8rem, 2vh, 1.2rem); color: var(--expo-orange);
-            letter-spacing: 0.8vw; font-weight: 700; text-transform: uppercase;
-            margin-bottom: 1.5vh; opacity: 0.8; text-shadow: 0 0 3vh rgba(255,107,26,0.15);
+        
+        /* ===== HEADER LOGO (أكبر) ===== */
+        .header-logo { margin-bottom: 2vh; padding: 0 2vw; }
+        .header-logo img { 
+            height: 16vh; 
+            width: auto; 
+            max-height: 160px; 
+            filter: drop-shadow(0 0 10vh rgba(255, 107, 26, 0.4)); 
+            transition: transform 0.3s ease; 
         }
+        .header-logo:hover img { transform: scale(1.03); }
+        
+        .expo-title {
+            font-size: clamp(1.2rem, 3vh, 1.8rem); 
+            color: var(--expo-orange);
+            letter-spacing: 0.8vw; 
+            font-weight: 700; 
+            text-transform: uppercase;
+            margin-bottom: 1.5vh; 
+            opacity: 1; 
+            text-shadow: 0 0 3vh rgba(255, 107, 26, 0.3);
+        }
+        
         .deco-line {
             width: 15vw; max-width: 180px; height: 3px;
             background: linear-gradient(90deg, transparent, var(--expo-orange), var(--expo-gold), var(--expo-orange), transparent);
-            margin: 1vh auto 2vh; opacity: 0.7; border-radius: 3px;
+            margin: 1.5vh auto 2.5vh; opacity: 0.9; border-radius: 3px;
+            box-shadow: 0 0 2vh rgba(255, 107, 26, 0.3);
         }
+        
+        /* ===== PROJECTS ROW (أكثر إضاءة) ===== */
         .projects-row {
             display: flex; justify-content: center; align-items: center; flex-wrap: wrap;
-            gap: 1.5vh 2vw; margin-bottom: 2vh; padding: 1.5vh 2vw;
-            background: rgba(255,107,26,0.06); border-radius: 10vh;
-            border: 1px solid rgba(255,107,26,0.1); backdrop-filter: blur(8px); max-width: 96vw;
+            gap: 2vh 2.5vw; margin-bottom: 2.5vh; padding: 1.5vh 2.5vw;
+            background: rgba(255, 107, 26, 0.12); 
+            border-radius: 10vh;
+            border: 1px solid rgba(255, 107, 26, 0.25); 
+            backdrop-filter: blur(10px); 
+            max-width: 96vw;
+            min-height: 15vh;
+            box-shadow: 0 0 5vh rgba(255, 107, 26, 0.1);
         }
         .project-item {
             display: flex; flex-direction: column; align-items: center; gap: 0.5vh;
-            transition: all 0.5s cubic-bezier(0.34,1.56,0.64,1); opacity: 0.4;
+            transition: all 0.5s cubic-bezier(0.34,1.56,0.64,1); 
+            opacity: 0.6; /* أكثر وضوحاً */
             cursor: default; padding: 0.5vh 0.2vw; border-radius: 2vh; min-width: 6vw;
         }
         .project-item.active { opacity: 1; transform: scale(1.08); }
         .project-item.pulse { animation: pulseProject 0.9s ease 3; }
+        .project-item.pulse-all { animation: pulseAll 0.9s ease 3; }
         @keyframes pulseProject {
-            0%, 100% { transform: scale(1); opacity: 0.5; }
-            30% { transform: scale(1.3); opacity: 1; filter: drop-shadow(0 0 5vh rgba(255,107,26,0.7)); }
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            30% { transform: scale(1.35); opacity: 1; filter: drop-shadow(0 0 5vh rgba(255, 107, 26, 0.8)); }
             70% { transform: scale(1.15); opacity: 1; }
         }
-        .project-item .project-icon {
-            width: 7vw; height: 7vw; max-width: 90px; max-height: 90px; min-width: 40px; min-height: 40px;
-            border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            border: 3px solid rgba(255,255,255,0.08); background: rgba(255,255,255,0.03);
-            transition: all 0.4s ease; overflow: hidden; padding: 1.5vh;
+        @keyframes pulseAll {
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            30% { transform: scale(1.2); opacity: 1; filter: drop-shadow(0 0 4vh rgba(255, 107, 26, 0.5)); }
+            70% { transform: scale(1.08); opacity: 1; }
         }
-        .project-item.active .project-icon { border-color: var(--expo-orange); background: rgba(255,107,26,0.12); box-shadow: 0 0 5vh rgba(255,107,26,0.15); }
-        .project-item .project-icon img { width: 100%; height: 100%; object-fit: contain; display: block; filter: brightness(1.3); transition: all 0.4s ease; }
-        .project-item.active .project-icon img { filter: brightness(1.5) drop-shadow(0 0 2vh rgba(255,107,26,0.3)); }
+        .project-item .project-icon {
+            width: 8vw; height: 8vw; max-width: 100px; max-height: 100px; min-width: 50px; min-height: 50px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            border: 2px solid rgba(255, 255, 255, 0.15); 
+            background: rgba(255, 255, 255, 0.06);
+            transition: all 0.4s ease; overflow: hidden; padding: 1.5vh;
+            box-shadow: 0 0 3vh rgba(255, 107, 26, 0.05);
+        }
+        .project-item.active .project-icon { 
+            border-color: var(--expo-orange); 
+            background: rgba(255, 107, 26, 0.2); 
+            box-shadow: 0 0 6vh rgba(255, 107, 26, 0.25); 
+        }
+        .project-item .project-icon img { 
+            width: 100%; height: 100%; object-fit: contain; display: block; 
+            filter: brightness(1.4); /* أكثر إشراقاً */ 
+            transition: all 0.4s ease; 
+        }
+        .project-item.active .project-icon img { 
+            filter: brightness(1.6) drop-shadow(0 0 2vh rgba(255, 107, 26, 0.4)); 
+        }
         .project-item .project-name {
-            font-size: clamp(0.4rem, 1.2vh, 0.8rem); color: rgba(255,255,255,0.3);
+            font-size: clamp(0.5rem, 1.4vh, 0.9rem); 
+            color: rgba(255, 255, 255, 0.5);
             font-weight: 700; letter-spacing: 0.5px; transition: all 0.3s ease; white-space: nowrap;
         }
-        .project-item.active .project-name { color: var(--expo-orange); text-shadow: 0 0 2vh rgba(255,107,26,0.3); }
+        .project-item.active .project-name { 
+            color: var(--expo-orange); 
+            text-shadow: 0 0 3vh rgba(255, 107, 26, 0.3); 
+        }
+        
+        /* ===== COUNTER SECTION (أكبر) ===== */
         .counter-section {
-            position: relative; background: rgba(0,0,0,0.4); padding: 2vh 4vw; border-radius: 4vh;
-            backdrop-filter: blur(6px); border: 1px solid rgba(255,107,26,0.1);
-            box-shadow: 0 0 8vh rgba(255,107,26,0.08); overflow: visible !important;
-            width: 90vw; max-width: 900px;
+            position: relative; 
+            background: rgba(0, 0, 0, 0.25); 
+            padding: 3vh 5vw; 
+            border-radius: 5vh;
+            backdrop-filter: blur(8px); 
+            border: 1px solid rgba(255, 107, 26, 0.2);
+            box-shadow: 0 0 12vh rgba(255, 107, 26, 0.12); 
+            overflow: visible !important;
+            width: 90vw; max-width: 1000px;
         }
         .counter-label {
-            font-size: clamp(1rem, 3vh, 2.2rem); font-weight: 700; color: rgba(255,255,255,0.7);
-            letter-spacing: 0.4vw; margin-bottom: 1vh; text-shadow: 0 0 3vh rgba(255,107,26,0.1);
+            font-size: clamp(1.5rem, 4vh, 2.8rem); 
+            font-weight: 700; 
+            color: rgba(255, 255, 255, 0.8);
+            letter-spacing: 0.4vw; 
+            margin-bottom: 1.5vh; 
+            text-shadow: 0 0 4vh rgba(255, 107, 26, 0.15);
         }
         .counter-number {
-            font-size: clamp(3rem, 20vh, 240px); font-weight: 900; line-height: 1;
-            padding: 1vh 2vw; letter-spacing: 0.4vw;
-            filter: drop-shadow(0 0 6vh rgba(255,107,26,0.5)) drop-shadow(0 0 12vh rgba(255,107,26,0.2));
-            overflow: visible !important; display: inline-block;
+            font-size: clamp(4rem, 25vh, 280px);
+            font-weight: 900;
+            line-height: 1;
+            padding: 1vh 2vw;
+            letter-spacing: 0.4vw;
+            filter: drop-shadow(0 0 8vh rgba(255, 107, 26, 0.6)) drop-shadow(0 0 16vh rgba(255, 107, 26, 0.3));
+            overflow: visible !important;
+            display: inline-block;
+            background: linear-gradient(135deg, #FF8C42 0%, #FFD700 45%, #FF6B1A 80%, #FFD700 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
-        .counter-number .odometer,
-        .counter-number .odometer .odometer-ribbon-inner,
-        .counter-number .odometer .odometer-ribbon-inner .odometer-value,
-        .counter-number .odometer .odometer-digit .odometer-ribbon-inner .odometer-value {
-            font-size: inherit; font-weight: 900; line-height: 1;
-            color: #FF6B1A !important;
-            background: linear-gradient(135deg, #FF8C42 0%, #FFD700 45%, #FF6B1A 80%, #FFD700 100%) !important;
-            -webkit-background-clip: text !important; background-clip: text !important;
-            -webkit-text-fill-color: transparent !important;
-            text-shadow: 0 0 3vh rgba(255,107,26,0.3);
-        }
-        .counter-number .odometer .odometer-digit { background: transparent !important; }
-        .counter-number .odometer .odometer-ribbon { background: transparent !important; }
         .sub-info {
-            font-size: clamp(0.6rem, 1.2vh, 1rem); color: rgba(255,255,255,0.08);
-            margin-top: 1vh; letter-spacing: 0.6vw; font-weight: 300;
+            font-size: clamp(0.8rem, 1.5vh, 1.2rem); 
+            color: rgba(255, 255, 255, 0.15);
+            margin-top: 1.5vh; 
+            letter-spacing: 0.6vw; 
+            font-weight: 300;
         }
+        
+        /* ===== FLASH OVERLAY ===== */
         .flash-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 100;
             pointer-events: none; opacity: 0; transition: opacity 0.1s ease;
         }
         .flash-overlay.active { opacity: 1; animation: flashEffect 0.7s ease forwards; }
         @keyframes flashEffect {
-            0% { background: rgba(255,107,26,0.35); }
+            0% { background: rgba(255, 107, 26, 0.4); }
             100% { background: transparent; opacity: 0; }
         }
+        
         #confetti-canvas {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 50;
         }
         .bottom-glow {
-            position: fixed; bottom: 0; left: 0; right: 0; height: 10vh;
-            background: linear-gradient(0deg, rgba(255,107,26,0.08) 0%, transparent 100%);
+            position: fixed; bottom: 0; left: 0; right: 0; height: 15vh;
+            background: linear-gradient(0deg, rgba(255, 107, 26, 0.15) 0%, transparent 100%);
             z-index: 0; pointer-events: none;
         }
+        
+        /* ===== FULLSCREEN BUTTON ===== */
         .fullscreen-btn {
             position: fixed; bottom: 3vh; right: 3vw; z-index: 9999;
-            background: rgba(255,107,26,0.15); border: 2px solid rgba(255,107,26,0.3);
-            color: var(--expo-white); width: 5vh; height: 5vh; min-width: 36px; min-height: 36px;
+            background: rgba(255, 107, 26, 0.25); 
+            border: 2px solid rgba(255, 107, 26, 0.4);
+            color: var(--expo-white); 
+            width: 6vh; height: 6vh; min-width: 40px; min-height: 40px;
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            font-size: 2.5vh; cursor: pointer; transition: all 0.3s ease;
+            font-size: 2.8vh; cursor: pointer; transition: all 0.3s ease;
             backdrop-filter: blur(10px); box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
-        .fullscreen-btn:hover { background: rgba(255,107,26,0.3); border-color: var(--expo-orange); transform: scale(1.1); }
-        .fullscreen-btn.exit { background: rgba(255,0,0,0.15); border-color: rgba(255,0,0,0.3); }
+        .fullscreen-btn:hover { background: rgba(255, 107, 26, 0.4); border-color: var(--expo-orange); transform: scale(1.1); }
+        .fullscreen-btn.exit { background: rgba(255,0,0,0.2); border-color: rgba(255,0,0,0.4); }
         .fullscreen-btn.exit:hover { background: rgba(255,0,0,0.3); border-color: #ff0000; }
+        
+        /* ===== RESPONSIVE ===== */
         @media (max-aspect-ratio: 4/3) {
-            .project-item .project-icon { width: 12vw; height: 12vw; max-width: 70px; max-height: 70px; }
-            .counter-number { font-size: clamp(2.5rem, 15vh, 150px); }
-            .counter-number .odometer,
-            .counter-number .odometer .odometer-ribbon-inner,
-            .counter-number .odometer .odometer-ribbon-inner .odometer-value,
-            .counter-number .odometer .odometer-digit .odometer-ribbon-inner .odometer-value { font-size: inherit; }
+            .project-item .project-icon { width: 12vw; height: 12vw; max-width: 80px; max-height: 80px; }
+            .counter-number { font-size: clamp(3rem, 18vh, 180px); }
         }
         @media (max-width: 768px) {
-            .header-logo img { height: 6vh; }
-            .expo-title { font-size: 1.5vh; letter-spacing: 0.5vw; }
-            .projects-row { gap: 1vh 1.5vw; padding: 1vh 2vw; border-radius: 6vh; }
-            .project-item .project-icon { width: 14vw; height: 14vw; max-width: 60px; max-height: 60px; padding: 1vh; }
-            .project-item .project-name { font-size: 0.8vh; }
-            .counter-label { font-size: 2vh; }
-            .counter-number { font-size: clamp(2rem, 12vh, 100px); }
-            .counter-number .odometer,
-            .counter-number .odometer .odometer-ribbon-inner,
-            .counter-number .odometer .odometer-ribbon-inner .odometer-value,
-            .counter-number .odometer .odometer-digit .odometer-ribbon-inner .odometer-value { font-size: inherit; }
-            .counter-section { padding: 1.5vh 3vw; }
+            .header-logo img { height: 12vh; max-height: 80px; }
+            .expo-title { font-size: 1.8vh; letter-spacing: 0.5vw; }
+            .projects-row { gap: 1.2vh 1.8vw; padding: 1.2vh 2vw; border-radius: 6vh; }
+            .project-item .project-icon { width: 14vw; height: 14vw; max-width: 70px; max-height: 70px; padding: 1vh; }
+            .project-item .project-name { font-size: 1vh; }
+            .counter-label { font-size: 2.5vh; }
+            .counter-number { font-size: clamp(2.5rem, 14vh, 120px); }
+            .counter-section { padding: 2vh 3vw; }
             .deco-line { width: 20vw; }
+            .fullscreen-btn { width: 5vh; height: 5vh; font-size: 2.2vh; }
         }
         @media (max-width: 480px) {
-            .project-item .project-icon { width: 18vw; height: 18vw; max-width: 50px; max-height: 50px; padding: 0.8vh; }
-            .counter-number { font-size: clamp(1.5rem, 10vh, 80px); }
-            .counter-number .odometer,
-            .counter-number .odometer .odometer-ribbon-inner,
-            .counter-number .odometer .odometer-ribbon-inner .odometer-value,
-            .counter-number .odometer .odometer-digit .odometer-ribbon-inner .odometer-value { font-size: inherit; }
-            .counter-label { font-size: 1.6vh; }
-            .fullscreen-btn { width: 4vh; height: 4vh; font-size: 2vh; bottom: 2vh; right: 2vw; }
+            .project-item .project-icon { width: 18vw; height: 18vw; max-width: 60px; max-height: 60px; padding: 0.8vh; }
+            .counter-number { font-size: clamp(2rem, 12vh, 90px); }
+            .counter-label { font-size: 2vh; }
+            .fullscreen-btn { width: 4.5vh; height: 4.5vh; font-size: 2vh; bottom: 2vh; right: 2vw; }
+            .header-logo img { height: 10vh; max-height: 60px; }
         }
         ::-webkit-scrollbar { display: none; }
     </style>
@@ -221,44 +279,16 @@
 
         <div class="expo-title">معرض الفراعنة العقاري</div>
 
+        <!-- Projects Row -->
         <div class="projects-row" id="projectsRow">
-            <div class="project-item" data-project="grand-plaza">
-                <div class="project-icon"><img src="grand plaza.png" alt="جراند بلازا" /></div>
-                <span class="project-name">جراند بلازا</span>
-            </div>
-            <div class="project-item" data-project="hekaya">
-                <div class="project-icon"><img src="HEKAYA.png" alt="حكاية" /></div>
-                <span class="project-name">حكاية</span>
-            </div>
-            <div class="project-item" data-project="celya">
-                <div class="project-icon"><img src="CELLIA.png" alt="سيليا" /></div>
-                <span class="project-name">سيليا</span>
-            </div>
-            <div class="project-item" data-project="kyan">
-                <div class="project-icon"><img src="KAYAN.png" alt="كيان" /></div>
-                <span class="project-name">كيان</span>
-            </div>
-            <div class="project-item" data-project="taj">
-                <div class="project-icon"><img src="TAG.png" alt="تاج" /></div>
-                <span class="project-name">تاج</span>
-            </div>
-            <div class="project-item" data-project="mazar-mall">
-                <div class="project-icon"><img src="mazar.png" alt="مزار مول" /></div>
-                <span class="project-name">مزار مول</span>
-            </div>
-            <div class="project-item" data-project="makkah-mall">
-                <div class="project-icon"><img src="MAKKAH1.png" alt="مول مكه" /></div>
-                <span class="project-name">مول مكه</span>
-            </div>
+            <!-- سيتم تعبئتها ديناميكياً -->
         </div>
 
         <div class="deco-line"></div>
 
         <div class="counter-section">
             <div class="counter-label">إجمالي الوحدات المباعة حتى الآن</div>
-            <div class="counter-number">
-                <span class="odometer" id="totalCounter">0</span>
-            </div>
+            <div class="counter-number" id="counterNumber">0</div>
         </div>
 
         <div class="sub-info">— لحظة نجاح جديدة —</div>
@@ -288,21 +318,41 @@
         // ============================================================
         // 1. DOM REFS
         // ============================================================
-        const totalCounter = document.getElementById('totalCounter');
+        const counterElement = document.getElementById('counterNumber');
         const flashOverlay = document.getElementById('flashOverlay');
-        const projectItems = document.querySelectorAll('.project-item');
+        const projectsRow = document.getElementById('projectsRow');
         const fullscreenBtn = document.getElementById('fullscreenBtn');
 
+        let projectItems = [];
+        let currentTotal = 0;
+        let isUpdating = false;
+
         // ============================================================
-        // 2. ODOMETER INIT
+        // 2. CountUp.js INSTANCE
         // ============================================================
-        const odometer = new Odometer({
-            el: totalCounter,
-            value: 0,
-            format: 'd',
-            duration: 800,
-            animation: 'count'
-        });
+        let countUpInstance = null;
+
+        function initCountUp(value) {
+            if (countUpInstance) {
+                countUpInstance.update(value);
+                return;
+            }
+            countUpInstance = new CountUp(counterElement, value, {
+                duration: 1.5,
+                useEasing: true,
+                useGrouping: true,
+                separator: ',',
+                decimal: '.',
+                prefix: '',
+                suffix: '',
+                enableScrollSpy: false
+            });
+            if (!countUpInstance.error) {
+                countUpInstance.start();
+            } else {
+                counterElement.textContent = value;
+            }
+        }
 
         // ============================================================
         // 3. FULLSCREEN
@@ -348,7 +398,7 @@
         });
 
         // ============================================================
-        // 4. CONFETTI
+        // 4. CONFETTI & FLASH
         // ============================================================
         function fireConfetti() {
             const colors = ['#FF6B1A', '#FF7F38', '#CDA434', '#FFD700', '#FFFFFF'];
@@ -364,9 +414,6 @@
             }, 400);
         }
 
-        // ============================================================
-        // 5. FLASH
-        // ============================================================
         function triggerFlash() {
             flashOverlay.classList.remove('active');
             void flashOverlay.offsetWidth;
@@ -375,41 +422,110 @@
         }
 
         // ============================================================
-        // 6. PROJECT PULSE
+        // 5. PROJECT PULSE
         // ============================================================
         function pulseProject(projectId) {
             projectItems.forEach(item => {
-                item.classList.remove('active', 'pulse');
-                if (item.dataset.project === projectId) {
-                    item.classList.add('active');
-                    setTimeout(() => item.classList.add('pulse'), 100);
-                    setTimeout(() => item.classList.remove('pulse'), 2800);
-                }
+                item.classList.remove('active', 'pulse', 'pulse-all');
             });
+            if (projectId) {
+                projectItems.forEach(item => {
+                    if (item.dataset.project === projectId) {
+                        item.classList.add('active');
+                        setTimeout(() => item.classList.add('pulse'), 100);
+                        setTimeout(() => item.classList.remove('pulse'), 2800);
+                    }
+                });
+            } else {
+                projectItems.forEach(item => {
+                    item.classList.add('active');
+                    setTimeout(() => item.classList.add('pulse-all'), 100);
+                    setTimeout(() => item.classList.remove('pulse-all', 'active'), 2800);
+                });
+            }
         }
 
         // ============================================================
-        // 7. UPDATE COUNTER (مع تحسين الأداء)
+        // 6. LOAD PROJECTS FROM FIRESTORE
         // ============================================================
-        let currentTotal = 0;
-        let isUpdating = false;
+        function loadProjects() {
+            db.collection('projects')
+                .onSnapshot(async (snapshot) => {
+                    if (snapshot.empty) {
+                        await seedDefaultProjects();
+                        loadProjects();
+                        return;
+                    }
+                    projectsRow.innerHTML = '';
+                    projectItems = [];
+                    snapshot.forEach((doc) => {
+                        const data = doc.data();
+                        const projectId = doc.id;
+                        const name = data.name || 'مشروع';
+                        const logo = data.logo || ''; 
 
+                        const projectItem = document.createElement('div');
+                        projectItem.className = 'project-item';
+                        projectItem.dataset.project = projectId;
+                        projectItem.innerHTML = `
+                            <div class="project-icon">
+                                ${logo ? `<img src="${logo}" alt="${name}" />` : `<i class="fas fa-building" style="font-size:2rem; color:var(--expo-orange);"></i>`}
+                            </div>
+                            <span class="project-name">${name}</span>
+                        `;
+                        projectsRow.appendChild(projectItem);
+                        projectItems.push(projectItem);
+                    });
+                }, (error) => {
+                    console.error('❌ خطأ في تحميل المشاريع:', error);
+                });
+        }
+
+        // ============================================================
+        // 7. SEED DEFAULT PROJECTS
+        // ============================================================
+        async function seedDefaultProjects() {
+            const defaultProjects = [
+                { id: 'grand-plaza', name: 'جراند بلازا' },
+                { id: 'hekaya', name: 'حكاية' },
+                { id: 'celya', name: 'سيليا' },
+                { id: 'kyan', name: 'كيان' },
+                { id: 'taj', name: 'تاج' },
+                { id: 'mazar-mall', name: 'مزار مول' },
+                { id: 'makkah-mall', name: 'مول مكه' }
+            ];
+            try {
+                const batch = db.batch();
+                defaultProjects.forEach(p => {
+                    const ref = db.collection('projects').doc(p.id);
+                    batch.set(ref, { name: p.name, logo: '' });
+                });
+                await batch.commit();
+                console.log('✅ تمت إضافة المشاريع الافتراضية');
+            } catch (error) {
+                console.error('❌ خطأ في إضافة المشاريع الافتراضية:', error);
+            }
+        }
+
+        // ============================================================
+        // 8. COUNTER UPDATE (محسّن)
+        // ============================================================
         function updateCounter(newValue, projectId = null) {
             if (isUpdating) return;
             if (newValue === currentTotal) return;
 
             isUpdating = true;
             currentTotal = newValue;
-            odometer.update(newValue);
+
+            if (countUpInstance) {
+                countUpInstance.update(newValue);
+            } else {
+                counterElement.textContent = newValue;
+            }
+
             triggerFlash();
             fireConfetti();
-
-            if (projectId) {
-                pulseProject(projectId);
-            } else {
-                const randomProject = projectItems[Math.floor(Math.random() * projectItems.length)];
-                if (randomProject) pulseProject(randomProject.dataset.project);
-            }
+            pulseProject(projectId);
 
             setTimeout(() => {
                 isUpdating = false;
@@ -417,11 +533,17 @@
         }
 
         // ============================================================
-        // 8. FIREBASE LISTENER (مع تحسين الأداء)
+        // 9. FIREBASE LISTENER FOR COUNTER (محسّن)
         // ============================================================
+        let lastUpdateTime = 0;
+
         db.collection('salesDisplay')
             .doc('salesDisplay')
             .onSnapshot((doc) => {
+                const now = Date.now();
+                if (now - lastUpdateTime < 300) return;
+                lastUpdateTime = now;
+
                 if (doc.exists) {
                     const data = doc.data();
                     const total = data.total || 0;
@@ -432,7 +554,7 @@
                 } else {
                     db.collection('salesDisplay').doc('salesDisplay').set({
                         total: 0,
-                        lastProject: 'mazar-mall',
+                        lastProject: null,
                         lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
                     }, { merge: true });
                 }
@@ -441,7 +563,7 @@
             });
 
         // ============================================================
-        // 9. LOAD INITIAL DATA
+        // 10. LOAD INITIAL DATA
         // ============================================================
         async function loadInitialData() {
             try {
@@ -450,28 +572,23 @@
                     const data = doc.data();
                     const total = data.total || 0;
                     currentTotal = total;
-                    odometer.update(total);
+                    initCountUp(total);
+                } else {
+                    initCountUp(0);
                 }
             } catch (error) {
                 console.error('❌ خطأ في تحميل البيانات الأولية:', error);
+                initCountUp(0);
             }
         }
         loadInitialData();
 
         // ============================================================
-        // 10. KEYBOARD SHORTCUT (للاختبار)
+        // 11. START LOADING PROJECTS
         // ============================================================
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowUp') {
-                db.collection('salesDisplay').doc('salesDisplay').update({
-                    total: firebase.firestore.FieldValue.increment(1),
-                    lastProject: 'mazar-mall',
-                    lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
-                });
-            }
-        });
+        loadProjects();
 
-        console.log('✅ شاشة العرض متجاوبة وجاهزة (مع تحسين الأداء)');
+        console.log('✅ شاشة العرض المضيئة جاهزة!');
     </script>
 </body>
 </html>
