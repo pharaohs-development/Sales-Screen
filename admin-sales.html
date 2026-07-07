@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     
     <style>
-        /* ===== نفس الـ Styles السابق ===== */
+        /* ===== جميع الـ Styles السابقة محتفظ بها ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --expo-orange: #FF6B1A;
@@ -30,7 +30,8 @@
             --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
         }
         body { font-family: 'Cairo', sans-serif; background: #f5f0ea; color: var(--expo-black); min-height: 100vh; padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; }
+        .container { max-width: 700px; margin: 0 auto; }
+        
         /* ===== LOGIN ===== */
         .login-screen {
             display: flex;
@@ -80,6 +81,7 @@
         .login-box .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,107,26,0.3); }
         .login-box .error-msg { background: #fee2e2; color: #dc2626; padding: 10px; border-radius: var(--radius-sm); margin-top: 12px; display: none; }
         .login-box .error-msg.show { display: block; }
+        
         /* ===== DASHBOARD ===== */
         .dashboard { display: none; }
         .dash-header {
@@ -108,15 +110,27 @@
             color: var(--expo-gray);
         }
         .btn-logout:hover { border-color: #dc2626; color: #dc2626; }
-        .current-total {
+        
+        /* ===== CARDS ===== */
+        .card {
             background: var(--expo-white);
-            padding: 24px;
+            padding: 20px 24px;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
-            text-align: center;
-            margin-bottom: 24px;
-            border-right: 4px solid var(--expo-orange);
+            margin-bottom: 20px;
         }
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--expo-black);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-title i { color: var(--expo-orange); }
+        
+        /* ===== CURRENT TOTAL ===== */
         .current-total .number {
             font-size: 4rem;
             font-weight: 900;
@@ -126,14 +140,8 @@
             background-clip: text;
         }
         .current-total .label { font-size: 0.9rem; color: var(--expo-gray); }
-        .quick-add {
-            background: var(--expo-white);
-            padding: 24px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            margin-bottom: 24px;
-            text-align: center;
-        }
+        
+        /* ===== QUICK ADD ===== */
         .quick-add .btn-big {
             width: 100%;
             padding: 30px;
@@ -150,14 +158,8 @@
         }
         .quick-add .btn-big:hover { transform: scale(1.02); box-shadow: 0 12px 40px rgba(255,107,26,0.4); }
         .quick-add .btn-big:active { transform: scale(0.98); }
-        .project-select {
-            background: var(--expo-white);
-            padding: 24px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            margin-bottom: 24px;
-        }
-        .project-select label { display: block; font-weight: 700; font-size: 0.95rem; margin-bottom: 8px; color: var(--expo-black); }
+        
+        /* ===== PROJECT SELECT ===== */
         .project-select select {
             width: 100%;
             padding: 12px 16px;
@@ -183,14 +185,8 @@
             transition: var(--transition);
         }
         .project-select .btn-sell:hover { background: var(--expo-orange-dark); transform: translateY(-2px); }
-        .manual-override {
-            background: var(--expo-white);
-            padding: 24px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            margin-bottom: 24px;
-        }
-        .manual-override label { display: block; font-weight: 700; font-size: 0.95rem; margin-bottom: 8px; color: var(--expo-black); }
+        
+        /* ===== MANUAL OVERRIDE ===== */
         .manual-override .input-row { display: flex; gap: 12px; }
         .manual-override input {
             flex: 1;
@@ -215,6 +211,69 @@
             transition: var(--transition);
         }
         .manual-override .btn-set:hover { background: #2a2a2a; }
+        
+        /* ===== ADD PROJECT ===== */
+        .add-project .input-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+        .add-project input[type="text"] {
+            flex: 2;
+            min-width: 150px;
+            padding: 10px 14px;
+            border: 2px solid var(--expo-gray-light);
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            font-family: 'Cairo', sans-serif;
+            background: #faf6f0;
+        }
+        .add-project input[type="file"] {
+            flex: 1;
+            min-width: 120px;
+            padding: 8px;
+            border: 2px solid var(--expo-gray-light);
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            font-family: 'Cairo', sans-serif;
+            background: #faf6f0;
+        }
+        .add-project input:focus { outline: none; border-color: var(--expo-orange); }
+        .add-project .btn-add {
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 0.95rem;
+            font-weight: 700;
+            font-family: 'Cairo', sans-serif;
+            background: var(--expo-orange);
+            color: var(--expo-white);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .add-project .btn-add:hover { background: var(--expo-orange-dark); transform: translateY(-2px); }
+        .add-project .project-list {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .add-project .project-tag {
+            background: rgba(255,107,26,0.1);
+            border: 1px solid rgba(255,107,26,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--expo-black);
+        }
+        .add-project .project-tag .remove {
+            color: #dc2626;
+            cursor: pointer;
+            font-weight: 900;
+            font-size: 0.7rem;
+        }
+        .add-project .project-tag .remove:hover { color: #b91c1c; }
+        
+        /* ===== RESET ===== */
         .reset-section { text-align: center; }
         .reset-section .btn-reset {
             padding: 12px 32px;
@@ -229,6 +288,8 @@
             transition: var(--transition);
         }
         .reset-section .btn-reset:hover { background: #dc2626; color: var(--expo-white); }
+        
+        /* ===== TOAST ===== */
         .toast {
             position: fixed;
             top: 24px;
@@ -252,10 +313,13 @@
             from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
             to { opacity: 1; transform: translateX(-50%) translateY(0); }
         }
+        
         @media (max-width: 480px) {
             .current-total .number { font-size: 3rem; }
             .quick-add .btn-big { font-size: 2.5rem; padding: 20px; }
             .manual-override .input-row { flex-direction: column; }
+            .add-project .input-row { flex-direction: column; }
+            .container { padding: 0 8px; }
         }
     </style>
 </head>
@@ -292,35 +356,29 @@
             <div class="dash-header">
                 <div class="title">
                     <h1>📊 <span>المبيعات</span> الفورية</h1>
-                    <p>تحكم في عداد المبيعات</p>
+                    <p>تحكم في عداد المبيعات وإدارة المشاريع</p>
                 </div>
                 <button class="btn-logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> خروج</button>
             </div>
 
             <!-- CURRENT TOTAL -->
-            <div class="current-total">
+            <div class="card current-total">
                 <div class="number" id="currentTotalDisplay">0</div>
                 <div class="label">إجمالي الوحدات المباعة</div>
             </div>
 
-            <!-- QUICK ADD -->
-            <div class="quick-add">
+            <!-- QUICK ADD (بدون مشروع محدد) -->
+            <div class="card quick-add">
                 <button class="btn-big" id="quickAddBtn">
-                    <i class="fas fa-plus-circle"></i> +1
+                    <i class="fas fa-plus-circle"></i> +1 (بدون مشروع)
                 </button>
             </div>
 
             <!-- PROJECT SELECT -->
-            <div class="project-select">
-                <label for="projectSelect">اختر المشروع</label>
+            <div class="card project-select">
+                <div class="card-title"><i class="fas fa-tags"></i> اختر المشروع للبيع المباشر</div>
                 <select id="projectSelect">
-                    <option value="grand-plaza">فندق جراند بلازا</option>
-                    <option value="hekaya">كومباوند حكاية</option>
-                    <option value="celya">كومباوند سيليا</option>
-                    <option value="kyan">مشروع كيان</option>
-                    <option value="taj">مشروع تاج</option>
-                    <option value="mazar-mall">مول مزار</option>
-                    <option value="makkah-mall">مول مكه</option>
+                    <!-- سيتم تعبئتها ديناميكياً -->
                 </select>
                 <button class="btn-sell" id="sellProjectBtn">
                     <i class="fas fa-tag"></i> بيع وحدة من هذا المشروع
@@ -328,12 +386,30 @@
             </div>
 
             <!-- MANUAL OVERRIDE -->
-            <div class="manual-override">
-                <label for="manualValue">تحديد العدد يدوياً</label>
+            <div class="card manual-override">
+                <div class="card-title"><i class="fas fa-pen"></i> تحديد العدد يدوياً</div>
                 <div class="input-row">
                     <input type="number" id="manualValue" placeholder="أدخل الرقم..." min="0" />
                     <button class="btn-set" id="setManualBtn">تحديث</button>
                 </div>
+            </div>
+
+            <!-- ADD PROJECT -->
+            <div class="card add-project">
+                <div class="card-title"><i class="fas fa-plus-circle"></i> إضافة مشروع جديد</div>
+                <div class="input-row">
+                    <input type="text" id="newProjectName" placeholder="اسم المشروع" />
+                    <input type="file" id="newProjectLogo" accept="image/*" />
+                    <button class="btn-add" id="addProjectBtn">
+                        <i class="fas fa-plus"></i> إضافة
+                    </button>
+                </div>
+                <div class="project-list" id="projectList">
+                    <!-- سيتم عرض المشاريع هنا -->
+                </div>
+                <p style="font-size:0.7rem; color:var(--expo-gray); margin-top:8px;">
+                    <i class="fas fa-info-circle"></i> اختر ملف صورة للوجو (سيتم حفظه في قاعدة البيانات)
+                </p>
             </div>
 
             <!-- RESET -->
@@ -383,8 +459,15 @@
         const setManualBtn = document.getElementById('setManualBtn');
         const resetBtn = document.getElementById('resetBtn');
 
+        const newProjectName = document.getElementById('newProjectName');
+        const newProjectLogo = document.getElementById('newProjectLogo');
+        const addProjectBtn = document.getElementById('addProjectBtn');
+        const projectList = document.getElementById('projectList');
+
         let currentTotal = 0;
         let unsubscribe = null;
+        let projects = [];
+        let isProcessing = false; // منع التحديثات المتكررة
 
         // ============================================================
         // 2. TOAST
@@ -400,30 +483,32 @@
         }
 
         // ============================================================
-        // 3. UPDATE TOTAL (باستخدام update بدلاً من set)
+        // 3. UPDATE TOTAL (محسّن)
         // ============================================================
         async function updateTotal(newTotal, projectId = null) {
+            if (isProcessing) {
+                showToast('⏳ جاري تنفيذ طلب سابق...', 'warning');
+                return false;
+            }
             if (newTotal < 0) {
                 showToast('❌ الرقم لا يمكن أن يكون سالباً', 'error');
                 return false;
             }
 
+            isProcessing = true;
             try {
                 const docRef = db.collection('salesDisplay').doc('salesDisplay');
-                // نتأكد أولاً أن المستند موجود
                 const doc = await docRef.get();
                 if (!doc.exists) {
-                    // إذا لم يكن موجوداً، ننشئه بقيمة 0
                     await docRef.set({
                         total: 0,
-                        lastProject: 'mazar-mall',
+                        lastProject: null,
                         lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 }
-                // ثم نحدث القيمة
                 await docRef.update({
                     total: newTotal,
-                    lastProject: projectId || 'mazar-mall',
+                    lastProject: projectId || null,
                     lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 showToast('✅ تم التحديث بنجاح!', 'success');
@@ -432,47 +517,180 @@
                 console.error('❌ خطأ في التحديث:', error);
                 showToast('❌ حدث خطأ أثناء التحديث: ' + error.message, 'error');
                 return false;
+            } finally {
+                isProcessing = false;
             }
         }
 
         // ============================================================
-        // 4. INCREMENT TOTAL (باستخدام update مع increment)
+        // 4. INCREMENT TOTAL (محسّن)
         // ============================================================
         async function incrementTotal(projectId = null) {
+            if (isProcessing) {
+                showToast('⏳ جاري تنفيذ طلب سابق...', 'warning');
+                return;
+            }
+
+            isProcessing = true;
             try {
                 const docRef = db.collection('salesDisplay').doc('salesDisplay');
-                // نتأكد أولاً أن المستند موجود
                 const doc = await docRef.get();
                 if (!doc.exists) {
-                    // إذا لم يكن موجوداً، ننشئه بقيمة 0
                     await docRef.set({
                         total: 0,
-                        lastProject: 'mazar-mall',
+                        lastProject: null,
                         lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 }
-                // نستخدم update مع increment (هذا يضمن إضافة 1 فقط وليس مضاعفة)
+                // استخدام increment(1) لضمان إضافة 1 فقط
                 await docRef.update({
                     total: firebase.firestore.FieldValue.increment(1),
-                    lastProject: projectId || 'mazar-mall',
+                    lastProject: projectId || null,
                     lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 showToast('✅ تم إضافة بيع جديد!', 'success');
-                return true;
+                
+                // تعطيل الأزرار مؤقتاً
+                quickAddBtn.disabled = true;
+                sellProjectBtn.disabled = true;
+                setTimeout(() => {
+                    quickAddBtn.disabled = false;
+                    sellProjectBtn.disabled = false;
+                }, 1500);
             } catch (error) {
                 console.error('❌ خطأ في الزيادة:', error);
                 showToast('❌ حدث خطأ أثناء إضافة البيع: ' + error.message, 'error');
-                return false;
+            } finally {
+                isProcessing = false;
             }
         }
 
         // ============================================================
-        // 5. RESET TOTAL
+        // 5. PROJECT FUNCTIONS
+        // ============================================================
+        const defaultProjects = [
+            { id: 'grand-plaza', name: 'جراند بلازا' },
+            { id: 'hekaya', name: 'حكاية' },
+            { id: 'celya', name: 'سيليا' },
+            { id: 'kyan', name: 'كيان' },
+            { id: 'taj', name: 'تاج' },
+            { id: 'mazar-mall', name: 'مزار مول' },
+            { id: 'makkah-mall', name: 'مول مكه' }
+        ];
+
+        async function loadProjects() {
+            try {
+                const snapshot = await db.collection('projects').get();
+                if (snapshot.empty) {
+                    await seedDefaultProjects();
+                    await loadProjects();
+                    return;
+                }
+                projects = [];
+                snapshot.forEach(doc => {
+                    projects.push({ id: doc.id, ...doc.data() });
+                });
+                updateProjectList();
+                updateProjectSelect();
+            } catch (error) {
+                console.error('❌ خطأ في تحميل المشاريع:', error);
+            }
+        }
+
+        async function seedDefaultProjects() {
+            try {
+                const batch = db.batch();
+                defaultProjects.forEach(p => {
+                    const ref = db.collection('projects').doc(p.id);
+                    batch.set(ref, { name: p.name, logo: '' });
+                });
+                await batch.commit();
+                console.log('✅ تمت إضافة المشاريع الافتراضية');
+            } catch (error) {
+                console.error('❌ خطأ في إضافة المشاريع الافتراضية:', error);
+            }
+        }
+
+        function updateProjectList() {
+            projectList.innerHTML = projects.map(p => `
+                <span class="project-tag">
+                    ${p.logo ? `<img src="${p.logo}" style="width:20px; height:20px; object-fit:contain; border-radius:50%;" />` : `<i class="fas fa-building" style="color:var(--expo-orange);"></i>`}
+                    ${p.name}
+                    <span class="remove" data-id="${p.id}">✕</span>
+                </span>
+            `).join('');
+
+            document.querySelectorAll('.project-tag .remove').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    removeProject(btn.dataset.id);
+                });
+            });
+        }
+
+        function updateProjectSelect() {
+            const currentValue = projectSelect.value;
+            projectSelect.innerHTML = '';
+            projects.forEach(p => {
+                const option = document.createElement('option');
+                option.value = p.id;
+                option.textContent = p.name;
+                projectSelect.appendChild(option);
+            });
+            if ([...projectSelect.options].some(opt => opt.value === currentValue)) {
+                projectSelect.value = currentValue;
+            }
+        }
+
+        async function removeProject(projectId) {
+            if (!confirm(`⚠️ هل أنت متأكد من حذف المشروع؟`)) return;
+            try {
+                await db.collection('projects').doc(projectId).delete();
+                showToast('✅ تم حذف المشروع', 'success');
+                loadProjects();
+            } catch (error) {
+                console.error('❌ خطأ في حذف المشروع:', error);
+                showToast('❌ حدث خطأ أثناء الحذف', 'error');
+            }
+        }
+
+        async function addProject() {
+            const name = newProjectName.value.trim();
+            const file = newProjectLogo.files[0];
+
+            if (!name || !file) {
+                showToast('❌ يرجى إدخال اسم المشروع واختيار صورة اللوجو', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const logoBase64 = e.target.result;
+                const id = name.toLowerCase().replace(/ /g, '-') + '-' + Date.now();
+
+                try {
+                    await db.collection('projects').doc(id).set({
+                        name: name,
+                        logo: logoBase64
+                    });
+                    showToast('✅ تم إضافة المشروع بنجاح!', 'success');
+                    newProjectName.value = '';
+                    newProjectLogo.value = '';
+                    loadProjects();
+                } catch (error) {
+                    console.error('❌ خطأ في إضافة المشروع:', error);
+                    showToast('❌ حدث خطأ أثناء إضافة المشروع', 'error');
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // ============================================================
+        // 6. RESET TOTAL
         // ============================================================
         async function resetTotal() {
             if (!confirm('⚠️ هل أنت متأكد من تصفير العداد؟ هذا الإجراء لا يمكن التراجع عنه!')) return;
             try {
-                await updateTotal(0, 'mazar-mall');
+                await updateTotal(0, null);
                 showToast('✅ تم تصفير العداد بنجاح', 'success');
             } catch (error) {
                 console.error('❌ خطأ في التصفير:', error);
@@ -481,8 +699,10 @@
         }
 
         // ============================================================
-        // 6. FIREBASE REALTIME LISTENER
+        // 7. FIREBASE REALTIME LISTENER (محسّن)
         // ============================================================
+        let lastUpdateTime = 0;
+
         function startListening() {
             if (unsubscribe) {
                 unsubscribe();
@@ -491,17 +711,14 @@
             unsubscribe = db.collection('salesDisplay')
                 .doc('salesDisplay')
                 .onSnapshot((doc) => {
+                    const now = Date.now();
+                    if (now - lastUpdateTime < 300) return;
+                    lastUpdateTime = now;
+
                     if (doc.exists) {
                         const data = doc.data();
                         currentTotal = data.total || 0;
                         currentTotalDisplay.textContent = currentTotal;
-                    } else {
-                        // إذا لم يكن المستند موجوداً، ننشئه بقيمة 0
-                        db.collection('salesDisplay').doc('salesDisplay').set({
-                            total: 0,
-                            lastProject: 'mazar-mall',
-                            lastUpdate: firebase.firestore.FieldValue.serverTimestamp()
-                        });
                     }
                 }, (error) => {
                     console.error('❌ خطأ في الاستماع:', error);
@@ -509,12 +726,13 @@
         }
 
         // ============================================================
-        // 7. AUTHENTICATION
+        // 8. AUTHENTICATION
         // ============================================================
         function showDashboard() {
             loginScreen.style.display = 'none';
             dashboard.style.display = 'block';
             startListening();
+            loadProjects();
             showToast('✅ مرحباً بك!', 'success');
         }
 
@@ -576,55 +794,61 @@
             }
         });
 
-        // Enter key for login
         adminPassword.addEventListener('keydown', (e) => { if (e.key === 'Enter') loginBtn.click(); });
         adminEmail.addEventListener('keydown', (e) => { if (e.key === 'Enter') loginBtn.click(); });
 
         // ============================================================
-        // 8. EVENT LISTENERS
+        // 9. EVENT LISTENERS
         // ============================================================
 
-        // Quick Add (+1)
         quickAddBtn.addEventListener('click', () => {
-            const projectId = projectSelect.value;
-            incrementTotal(projectId);
+            incrementTotal(null);
         });
 
-        // Sell from selected project
         sellProjectBtn.addEventListener('click', () => {
             const projectId = projectSelect.value;
+            if (!projectId) {
+                showToast('❌ يرجى اختيار مشروع', 'error');
+                return;
+            }
             incrementTotal(projectId);
         });
 
-        // Manual override
         setManualBtn.addEventListener('click', () => {
             const value = parseInt(manualValue.value.trim());
             if (isNaN(value) || value < 0) {
                 showToast('❌ يرجى إدخال رقم صحيح أكبر من أو يساوي 0', 'error');
                 return;
             }
-            const projectId = projectSelect.value;
+            const projectId = projectSelect.value || null;
             updateTotal(value, projectId);
             manualValue.value = '';
         });
 
-        // Reset
         resetBtn.addEventListener('click', resetTotal);
+        addProjectBtn.addEventListener('click', addProject);
 
         // ============================================================
-        // 9. KEYBOARD SHORTCUTS
+        // 10. KEYBOARD SHORTCUTS
         // ============================================================
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' && document.activeElement === manualValue) {
                 setManualBtn.click();
             }
-            if (e.key === ' ' && document.activeElement !== manualValue && document.activeElement !== adminPassword && document.activeElement !== adminEmail) {
+            if (e.key === 'Enter' && document.activeElement === newProjectName) {
+                addProjectBtn.click();
+            }
+            if (e.key === ' ' && document.activeElement !== manualValue && 
+                document.activeElement !== adminPassword && 
+                document.activeElement !== adminEmail &&
+                document.activeElement !== newProjectName &&
+                document.activeElement !== newProjectLogo) {
                 e.preventDefault();
                 quickAddBtn.click();
             }
         });
 
-        console.log('✅ لوحة تحكم المبيعات جاهزة (باستخدام update)');
+        console.log('✅ لوحة تحكم المبيعات جاهزة (مع تحسين الأداء)');
     </script>
 </body>
 </html>
