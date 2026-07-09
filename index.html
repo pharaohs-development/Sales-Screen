@@ -35,7 +35,7 @@
         html, body { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; }
         body { font-family: 'Cairo', sans-serif; background: var(--expo-black); color: var(--expo-white); overflow: hidden; }
         
-        /* ===== BACKGROUND - أكثر إضاءة ===== */
+        /* ===== BACKGROUND ===== */
         .bg-luxury {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 0;
             background: 
@@ -62,17 +62,59 @@
             padding: 2vh 2vw; text-align: center; overflow: hidden;
         }
         
-        /* ===== HEADER LOGO (أكبر) ===== */
-        .header-logo { margin-bottom: 2vh; padding: 0 2vw; }
-        .header-logo img { 
-            height: 16vh; 
-            width: auto; 
-            max-height: 160px; 
-            filter: drop-shadow(0 0 10vh rgba(255, 107, 26, 0.4)); 
-            transition: transform 0.3s ease; 
+        /* ===== HEADER LOGOS - أكبر حجم ===== */
+        .header-logos {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 2vw;
+            margin-bottom: 1.5vh;
+            padding: 0 2vw;
+            flex-wrap: wrap;
         }
-        .header-logo:hover img { transform: scale(1.03); }
         
+        .header-logos .logo-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* تكبير الشعارات بشكل ملحوظ */
+        .header-logos .logo-item img {
+            height: 18vh;          /* زيادة من 12vh إلى 18vh */
+            width: auto;
+            max-height: 200px;     /* زيادة من 130px إلى 200px */
+            filter: drop-shadow(0 0 8vh rgba(255, 107, 26, 0.4));
+            transition: transform 0.3s ease;
+        }
+        
+        .header-logos .logo-item img:hover {
+            transform: scale(1.03);
+        }
+        
+        .header-logos .logo-separator {
+            font-size: 8vh;        /* زيادة من 6vh إلى 8vh */
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.15);
+            padding: 0 0.5vw;
+            user-select: none;
+        }
+        
+        /* شعار EXPO أكبر قليلاً من الشعار الرئيسي */
+        .header-logos .logo-item.expo img {
+            height: 16vh;          /* زيادة من 10vh إلى 16vh */
+            max-height: 180px;     /* زيادة من 110px إلى 180px */
+        }
+        
+        .header-logos .logo-item.expo .expo-text {
+            font-size: 6vh;        /* زيادة من 5vh إلى 6vh */
+            font-weight: 900;
+            color: var(--expo-orange);
+            text-shadow: 0 0 6vh rgba(255, 107, 26, 0.3);
+            letter-spacing: 2px;
+        }
+        
+        /* ===== EXPO TITLE ===== */
         .expo-title {
             font-size: clamp(1.2rem, 3vh, 1.8rem); 
             color: var(--expo-orange);
@@ -91,7 +133,7 @@
             box-shadow: 0 0 2vh rgba(255, 107, 26, 0.3);
         }
         
-        /* ===== PROJECTS ROW (أكثر إضاءة) ===== */
+        /* ===== PROJECTS ROW ===== */
         .projects-row {
             display: flex; justify-content: center; align-items: center; flex-wrap: wrap;
             gap: 2vh 2.5vw; margin-bottom: 2.5vh; padding: 1.5vh 2.5vw;
@@ -106,7 +148,7 @@
         .project-item {
             display: flex; flex-direction: column; align-items: center; gap: 0.5vh;
             transition: all 0.5s cubic-bezier(0.34,1.56,0.64,1); 
-            opacity: 0.6; /* أكثر وضوحاً */
+            opacity: 0.6;
             cursor: default; padding: 0.5vh 0.2vw; border-radius: 2vh; min-width: 6vw;
         }
         .project-item.active { opacity: 1; transform: scale(1.08); }
@@ -137,7 +179,7 @@
         }
         .project-item .project-icon img { 
             width: 100%; height: 100%; object-fit: contain; display: block; 
-            filter: brightness(1.4); /* أكثر إشراقاً */ 
+            filter: brightness(1.4);
             transition: all 0.4s ease; 
         }
         .project-item.active .project-icon img { 
@@ -153,7 +195,7 @@
             text-shadow: 0 0 3vh rgba(255, 107, 26, 0.3); 
         }
         
-        /* ===== COUNTER SECTION (أكبر) ===== */
+        /* ===== COUNTER SECTION ===== */
         .counter-section {
             position: relative; 
             background: rgba(0, 0, 0, 0.25); 
@@ -237,7 +279,10 @@
             .counter-number { font-size: clamp(3rem, 18vh, 180px); }
         }
         @media (max-width: 768px) {
-            .header-logo img { height: 12vh; max-height: 80px; }
+            .header-logos .logo-item img { height: 12vh; max-height: 100px; }
+            .header-logos .logo-item.expo img { height: 10vh; max-height: 90px; }
+            .header-logos .logo-separator { font-size: 5vh; }
+            .header-logos { gap: 1.5vw; }
             .expo-title { font-size: 1.8vh; letter-spacing: 0.5vw; }
             .projects-row { gap: 1.2vh 1.8vw; padding: 1.2vh 2vw; border-radius: 6vh; }
             .project-item .project-icon { width: 14vw; height: 14vw; max-width: 70px; max-height: 70px; padding: 1vh; }
@@ -249,11 +294,13 @@
             .fullscreen-btn { width: 5vh; height: 5vh; font-size: 2.2vh; }
         }
         @media (max-width: 480px) {
+            .header-logos .logo-item img { height: 8vh; max-height: 70px; }
+            .header-logos .logo-item.expo img { height: 7vh; max-height: 60px; }
+            .header-logos .logo-separator { font-size: 3.5vh; }
             .project-item .project-icon { width: 18vw; height: 18vw; max-width: 60px; max-height: 60px; padding: 0.8vh; }
             .counter-number { font-size: clamp(2rem, 12vh, 90px); }
             .counter-label { font-size: 2vh; }
             .fullscreen-btn { width: 4.5vh; height: 4.5vh; font-size: 2vh; bottom: 2vh; right: 2vw; }
-            .header-logo img { height: 10vh; max-height: 60px; }
         }
         ::-webkit-scrollbar { display: none; }
     </style>
@@ -273,11 +320,19 @@
 
     <!-- ===== MAIN CONTENT ===== -->
     <div class="display-container" id="displayContainer">
-        <div class="header-logo">
-            <img src="Logo-pharaohs.png" alt="Pharaohs Developments" />
+        
+        <!-- ===== HEADER: PHARAOHS LOGO | EXPO LOGO (أكبر) ===== -->
+        <div class="header-logos">
+            <div class="logo-item">
+                <img src="Logo-pharaohs.png" alt="Pharaohs Developments" />
+            </div>
+            <span class="logo-separator">|</span>
+            <div class="logo-item expo">
+                <img src="EXPO_LOGO_WH.png" alt="EXPO" />
+            </div>
         </div>
 
-        <div class="expo-title">معرض الفراعنة العقاري</div>
+        <div class="expo-title">#أكبر_حدث_عقاري_بصعيد_مصر</div>
 
         <!-- Projects Row -->
         <div class="projects-row" id="projectsRow">
@@ -508,7 +563,7 @@
         }
 
         // ============================================================
-        // 8. COUNTER UPDATE (محسّن)
+        // 8. COUNTER UPDATE
         // ============================================================
         function updateCounter(newValue, projectId = null) {
             if (isUpdating) return;
@@ -533,7 +588,7 @@
         }
 
         // ============================================================
-        // 9. FIREBASE LISTENER FOR COUNTER (محسّن)
+        // 9. FIREBASE LISTENER FOR COUNTER
         // ============================================================
         let lastUpdateTime = 0;
 
